@@ -6,7 +6,7 @@ build:
 	docker build -f Dockerfile.AI -t ai-container .
 
 shell:
-	docker run -it -v ${PWD}/src/:/home/aiuser/src -p 5000:5000 ai-container bash
+	docker run -it -v ${CURDIR}/src/:/home/aiuser/src -p 5000:5000 ai-container bash
 
 exec:
-	docker run -it -v ${PWD}/src/:/home/aiuser/src -p 5000:5000 ai-container python app.py
+	docker run -it -v ${CURDIR}/src/:/home/aiuser/src -p 5000:5000 ai-container python app.py
