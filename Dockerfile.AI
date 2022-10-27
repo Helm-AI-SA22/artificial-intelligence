@@ -1,0 +1,12 @@
+FROM python:3.8-slim-buster
+
+### fix user
+RUN useradd -ms /bin/bash aiuser
+USER aiuser
+WORKDIR /home/aiuser
+RUN cd /home/aiuser && mkdir src
+
+WORKDIR /home/aiuser/src
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
