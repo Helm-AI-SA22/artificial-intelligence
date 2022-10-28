@@ -7,9 +7,9 @@ RUN apt install gcc -y
 RUN useradd -ms /bin/bash aiuser
 USER aiuser
 WORKDIR /home/aiuser
-RUN cd /home/aiuser && mkdir src
+RUN cd /home/aiuser && mkdir workdir
 
-WORKDIR /home/aiuser/src
+WORKDIR /home/aiuser/workdir
 
 COPY requirements.txt requirements.txt
 RUN pip3 install --upgrade pip
