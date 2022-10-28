@@ -1,0 +1,12 @@
+FROM python:3.8-slim-buster
+
+RUN apt update
+RUN apt install gcc -y
+
+### fix user
+RUN useradd -ms /bin/bash aiuser
+USER aiuser
+WORKDIR /home/aiuser
+RUN cd /home/aiuser && mkdir workdir
+
+WORKDIR /home/aiuser/workdir
