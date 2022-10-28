@@ -1,5 +1,7 @@
 FROM python:3.8-slim-buster
 
+RUN apt install gcc -y
+
 ### fix user
 RUN useradd -ms /bin/bash aiuser
 USER aiuser
@@ -9,4 +11,5 @@ RUN cd /home/aiuser && mkdir src
 WORKDIR /home/aiuser/src
 
 COPY requirements.txt requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
