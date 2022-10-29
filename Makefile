@@ -8,7 +8,7 @@ build:
 
 destroy:
 	docker stop helmai
-	docker rm helmai
+	docker rm -v helmai
 
 create-environment:
 	docker exec helmai bash -c "python -m venv .env"
@@ -21,4 +21,4 @@ shell:
 	docker exec -it helmai bash
 
 exec:
-	docker exec helmai bash -c "source .env/bin/activate; python app.py"
+	docker exec -it helmai bash -c "source .env/bin/activate; python app.py"
