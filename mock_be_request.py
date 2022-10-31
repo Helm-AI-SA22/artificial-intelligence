@@ -2,6 +2,7 @@ import requests
 import wget
 import pandas as pd
 import os
+import base64
 
 
 mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-Review-of-Wi-Fi-and-Machine-Learning-Integration-with-Topic-Modeling-Techniques/main/ML_WIFI_preprocessed.csv"
@@ -26,5 +27,8 @@ for i in range(len(ids)):
 
 url = "http://127.0.0.1:5000/modeling?model=bertopic"
 response = requests.post(url=url, json=json_req)
+json_res = response.json() # returns a dict
 
-print(response.text)
+html_code = base64.b64decode(json_res["plots"]["topics"]).decode("utf-8")
+with open("test.html", "w") as html_page:
+    html_page.write(html_code)

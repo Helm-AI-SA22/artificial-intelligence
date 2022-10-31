@@ -6,6 +6,7 @@ import base64
 import pandas as pd
 import json
 import wget
+import os
 
 app = Flask(__name__)
 api = Api(app)
@@ -46,8 +47,6 @@ class AIServer(Resource):
         print("Started topic modeling")
         topics, probs = topic_model.train(json_req)
 
-        print(type(topics))
-
         json_res["document_ids"] = json_req["document_ids"]
         json_res["topics"] = topics
 
@@ -58,14 +57,17 @@ class AIServer(Resource):
         for plot_name, plot in plots.items():
             file_name = f"{plot_name}.html"
             plot.write_html(file_name)
-            with open(file_name, "r") as html_plot:
-                html_text = html_plot.read().encode("ascii")
-                encoded_text = base64.b64encode(html_text)
-                print(type(encoded_text))
-                json_res["plots"][plot_name] = str(encoded_text)
+            with open(file_name, "rb") as html_plot:
+                html_text = html_plot.read()
+                encoded_text = base64.b64encode(html_text).decode("utf-8")
+                json_res["plots"][plot_name] = encoded_text
 
         with open("res.json", "w") as res:
             res.write(json.dumps(json_res, indent=4))
+
+        os.system("rm terms_score.html")
+        os.system("rm topics.html")
+        os.system("rm hierarchy.html")
 
         return json_res
 
