@@ -25,7 +25,7 @@ for i in range(len(ids)):
     json_req["text"].append(data.loc[i, "text"])
 
 
-url = "http://127.0.0.1:5000/modeling?model=bertopic"
+url = "http://127.0.0.1:5000/slow"
 response = requests.post(url=url, json=json_req)
 json_res = response.json() # returns a dict
 

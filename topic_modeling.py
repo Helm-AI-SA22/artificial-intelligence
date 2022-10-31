@@ -49,9 +49,11 @@ class BERTopicModel(TopicModel):
 
     def get_plots(self):
         plots = {}
-        plots["topics"] = self.model.visualize_topics()
-        plots["hierarchy"] = self.model.visualize_hierarchy()
-        plots["terms_score"] = self.model.visualize_barchart()
+        plots["topic_clusters_plot"] = self.model.visualize_topics()
+        plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
+        plots["topics_words_score_plot"] = self.model.visualize_barchart()
+        plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+        # to add document clusters
         return plots
 
 

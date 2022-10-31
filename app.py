@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-from flask_restful import Api, Resource, reqparse
+from flask_restx import Api, Resource, reqparse
 from topic_modeling import BERTopicModel
 import base64
 import pandas as pd
@@ -17,15 +17,9 @@ bertopic = None
 lda = None
 
 
-class AIServer(Resource):
-
-    def get(self):
-        if request.method == "GET":
-            return "<h1>TEST</h1>"
+class SlowAPI(Resource):
 
     def post(self):
-
-        print("Request arrive")
 
         json_req = {}
         json_res = {}
@@ -36,21 +30,13 @@ class AIServer(Resource):
         else:
             return 'Content-Type not supported!'
 
-        model_name = request.values.get("model")
-
-        if model_name not in ["bertopic", "lda"]:
-            return 'Model not supported!'
-
-        if model_name == "bertopic":
-            topic_model = bertopic
-
-        print("Started topic modeling")
-        topics, probs = topic_model.train(json_req)
+        print("Started topic modeling with BERTopic")
+        topics, probs = bertopic.train(json_req)
 
         json_res["document_ids"] = json_req["document_ids"]
         json_res["topics"] = topics
 
-        plots = topic_model.get_plots()
+        plots = bertopic.get_plots()
 
 
         json_res["plots"] = {}
@@ -62,19 +48,28 @@ class AIServer(Resource):
                 encoded_text = base64.b64encode(html_text).decode("utf-8")
                 json_res["plots"][plot_name] = encoded_text
 
-        with open("res.json", "w") as res:
-            res.write(json.dumps(json_res, indent=4))
-
-        os.system("rm terms_score.html")
-        os.system("rm topics.html")
-        os.system("rm hierarchy.html")
-
         return json_res
 
+class FastAPI(Resource):
 
+    def post(self):
+
+        json_req = {}
+        json_res = {}
+        
+        content_type = request.headers.get('Content-Type')
+        if (content_type == 'application/json'):
+            json_req = request.get_json()
+        else:
+            return 'Content-Type not supported!'
+
+        print("Started topic modeling with LDA")
+
+        return {}
 
 if __name__ == "__main__":
     bertopic = BERTopicModel()
     bertopic.load_model()
-    api.add_resource(AIServer, "/modeling")
+    api.add_resource(SlowAPI, "/slow")
+    api.add_resource(FastAPI, "/fast")
     app.run(host='0.0.0.0')
