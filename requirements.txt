@@ -48,3 +48,4 @@ zipp==3.10.0
 flask_restful
 wget
 flask-restx==0.5.1
+gensim

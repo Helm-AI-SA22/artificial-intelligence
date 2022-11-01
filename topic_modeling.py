@@ -3,6 +3,12 @@ import pandas as pd
 from bertopic import BERTopic
 from umap import UMAP
 from hdbscan import HDBSCAN
+from gensim.models import LdaMulticore
+from gensim.utils import simple_preprocess
+from gensim.parsing.preprocessing import STOPWORDS
+from nltk.stem import WordNetLemmatizer, SnowballStemmer
+from nltk.stem.porter import *
+import numpy as np
 
 
 class TopicModel:
@@ -41,9 +47,8 @@ class BERTopicModel(TopicModel):
                         umap_model=umap_model, hdbscan_model=hdbscan_model, 
                         n_gram_range=(1, 3), calculate_probabilities=True)
 
-    def train(self, json_data):
-        data = pd.DataFrame(json_data)
-        topics, probs = self.model.fit_transform(data['text'])
+    def train(self, texts):
+        topics, probs = self.model.fit_transform(texts)
         self.trained = True
         return topics, probs
 
@@ -59,5 +64,9 @@ class BERTopicModel(TopicModel):
 
 class LDAModel(TopicModel):
 
-    def __init__(self):
+    def __init__(self, k):
         super().__init__()
+        self.k = k
+
+    def train():
+        pass

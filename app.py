@@ -30,23 +30,51 @@ class SlowAPI(Resource):
         else:
             return 'Content-Type not supported!'
 
+
+        ids = []
+        texts = []
+        for doc in json_req["documents"]:
+            ids.append(doc["id"])
+            texts.append(doc["abstract"])
+
+
         print("Started topic modeling with BERTopic")
-        topics, probs = bertopic.train(json_req)
+        topics, probs = bertopic.train(texts)
 
-        json_res["document_ids"] = json_req["document_ids"]
-        json_res["topics"] = topics
+        json_res["documents"] = []
 
+        for doc_info in zip(ids, probs):
+            id, prob = doc_info
+
+            document = {
+                "id": id,
+                "topics": []
+            }
+
+            for topic in range(len(prob)):
+                topic_info = {
+                    "topic_name": topic,
+                    "affinity": prob[topic]
+                }
+
+                document["topics"].append(topic_info)
+
+            json_res["documents"].append(document)
+            
+
+            
+
+        
         plots = bertopic.get_plots()
 
-
-        json_res["plots"] = {}
         for plot_name, plot in plots.items():
             file_name = f"{plot_name}.html"
             plot.write_html(file_name)
             with open(file_name, "rb") as html_plot:
                 html_text = html_plot.read()
                 encoded_text = base64.b64encode(html_text).decode("utf-8")
-                json_res["plots"][plot_name] = encoded_text
+                json_res[plot_name] = encoded_text
+            os.system(f"rm {file_name}")
 
         return json_res
 
