@@ -3,11 +3,8 @@ import pandas as pd
 from bertopic import BERTopic
 from umap import UMAP
 from hdbscan import HDBSCAN
+from sentence_transformers import SentenceTransformer
 from gensim.models import LdaMulticore
-from gensim.utils import simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
-from nltk.stem import WordNetLemmatizer, SnowballStemmer
-from nltk.stem.porter import *
 import numpy as np
 
 
@@ -52,13 +49,13 @@ class BERTopicModel(TopicModel):
         self.trained = True
         return topics, probs
 
-    def get_plots(self):
+    def get_plots(self, texts):
         plots = {}
         plots["topic_clusters_plot"] = self.model.visualize_topics()
         plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
         plots["topics_words_score_plot"] = self.model.visualize_barchart()
         plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-        # to add document clusters
+        plots["document_clusters_plot"] = self.model.visualize_documents(texts)
         return plots
 
 

@@ -64,8 +64,8 @@ class SlowAPI(Resource):
 
             
 
-        
-        plots = bertopic.get_plots()
+        print("Generating the plots")
+        plots = bertopic.get_plots(texts)
 
         for plot_name, plot in plots.items():
             file_name = f"{plot_name}.html"

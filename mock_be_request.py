@@ -39,7 +39,8 @@ plot_names = [
     "topic_clusters_plot" , 
     "hierarchical_clustering_plot" ,
     "topics_words_score_plot" ,
-    "topics_similarity_plot"
+    "topics_similarity_plot",
+    "document_clusters_plot"
 ]
 
 for plot_name in plot_names:
