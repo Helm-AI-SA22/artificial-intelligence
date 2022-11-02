@@ -35,12 +35,19 @@ json_res = response.json() # returns a dict
 with open('response.json', 'w') as fp:
     json.dump(json_res, fp)
 
+# plot_names = [
+#     "topic_clusters_plot" , 
+#     "hierarchical_clustering_plot" ,
+#     "topics_words_score_plot" ,
+#     "topics_similarity_plot",
+#     "document_clusters_plot"
+# ]
+
 plot_names = [
     "topic_clusters_plot" , 
     "hierarchical_clustering_plot" ,
     "topics_words_score_plot" ,
-    "topics_similarity_plot",
-    "document_clusters_plot"
+    "topics_similarity_plot"
 ]
 
 for plot_name in plot_names:

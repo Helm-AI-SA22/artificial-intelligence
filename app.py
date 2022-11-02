@@ -39,7 +39,7 @@ class SlowAPI(Resource):
 
 
         print("Started topic modeling with BERTopic")
-        topics, probs = bertopic.train(texts)
+        topics, probs, names = bertopic.train(texts)
 
         json_res["documents"] = []
 
@@ -54,16 +54,24 @@ class SlowAPI(Resource):
 
             for topic in range(len(prob)):
                 topic_info = {
-                    "topic_name": topic,
+                    "id": topic,
                     "affinity": prob[topic]
                 }
 
                 document["topics"].append(topic_info)
 
             json_res["documents"].append(document)
-            
 
-            
+
+        json_res["topic"] = []
+
+        for i in range(len(names)):
+            topic_name = names[i]
+            topic = {
+                "id": i,
+                "name": topic_name
+            }
+            json_res["topic"].append(topic)
 
         print("Generating the plots")
         plots = bertopic.get_plots(texts)

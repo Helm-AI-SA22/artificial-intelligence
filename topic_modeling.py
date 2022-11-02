@@ -46,8 +46,9 @@ class BERTopicModel(TopicModel):
 
     def train(self, texts):
         topics, probs = self.model.fit_transform(texts)
+        names = self.model.generate_topic_labels(5, False, None, "-")
         self.trained = True
-        return topics, probs
+        return topics, probs, names[1:]
 
     def get_plots(self, texts):
         plots = {}
@@ -56,7 +57,7 @@ class BERTopicModel(TopicModel):
             plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
             plots["topics_words_score_plot"] = self.model.visualize_barchart()
             plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-            plots["document_clusters_plot"] = self.model.visualize_documents(texts)
+            # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
         return plots
 
 
