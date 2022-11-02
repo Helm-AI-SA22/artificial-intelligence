@@ -44,7 +44,8 @@ class SlowAPI(Resource):
         json_res["documents"] = []
 
         for doc_info in zip(ids, probs):
-            id, prob = doc_info
+            id, prob_unorm = doc_info
+            prob = prob_unorm/prob_unorm.sum()
 
             document = {
                 "id": id,

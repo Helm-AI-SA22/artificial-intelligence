@@ -51,11 +51,12 @@ class BERTopicModel(TopicModel):
 
     def get_plots(self, texts):
         plots = {}
-        plots["topic_clusters_plot"] = self.model.visualize_topics()
-        plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-        plots["topics_words_score_plot"] = self.model.visualize_barchart()
-        plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-        plots["document_clusters_plot"] = self.model.visualize_documents(texts)
+        if self.trained:
+            plots["topic_clusters_plot"] = self.model.visualize_topics()
+            plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
+            plots["topics_words_score_plot"] = self.model.visualize_barchart()
+            plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+            plots["document_clusters_plot"] = self.model.visualize_documents(texts)
         return plots
 
 
