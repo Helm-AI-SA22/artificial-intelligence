@@ -46,6 +46,7 @@ urllib3==1.26.12
 werkzeug==2.1.2
 zipp==3.10.0
 flask_restful
-wget
+wget==3.2
 flask-restx==0.5.1
-gensim
+gensim==4.2.0
+pyLDAvis==3.3.1
