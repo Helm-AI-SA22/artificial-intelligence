@@ -1,2 +1,2 @@
-rm *.html;
-rm response.json;
+rm mocked_requests/*.html;
+rm mocked_requestsresponse.json;
