@@ -3,8 +3,6 @@ import pandas as pd
 from bertopic import BERTopic
 from umap import UMAP
 from hdbscan import HDBSCAN
-from sentence_transformers import SentenceTransformer
-import numpy as np
 from gensim.models import LdaMulticore
 import gensim
 from gensim.utils import simple_preprocess
@@ -62,15 +60,30 @@ class BERTopicModel(TopicModel):
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, "-")
         self.trained = True
+
+        all_topics = list(set(topics))
+
+        if -1 in all_topics:
+            all_topics.remove(-1)
+        
+        self.num_topics = len(all_topics)
+
         return topics, probs, names[1:]
 
     def get_plots(self, texts):
         plots = {}
         if self.trained:
-            plots["topic_clusters_plot"] = self.model.visualize_topics()
             plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-            plots["topics_words_score_plot"] = self.model.visualize_barchart()
+            plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
             plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+
+            try:
+                plots["topic_clusters_plot"] = self.model.visualize_topics()
+            except Exception:
+                print("Error in creating the plot")
+                plots["topic_clusters_plot"] = None
+
+
             # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
         return plots
 
@@ -88,8 +101,10 @@ class LDAModel(TopicModel):
 
         n = int(len(texts)*frac)
 
+        print(f"\n {n} \n")
+
         texts_series = pd.Series(texts)
-        texts_series = texts_series.sample(n)
+        texts_series = texts_series.sample(n).tolist()
 
 
         umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
@@ -102,7 +117,7 @@ class LDAModel(TopicModel):
         infering_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
                         umap_model=umap_model, hdbscan_model=hdbscan_model, n_gram_range=(1, 3))
 
-        topics, _ = infering_model.fit_transform(texts)
+        topics, _ = infering_model.fit_transform(texts_series)
 
         return len(set(topics))
     
@@ -131,13 +146,10 @@ class LDAModel(TopicModel):
 
         bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-
-        print("PROVA1")
         self.k = self.get_topics_num(texts)
-        print("PROVA2")
 
-        lda_model = gensim.models.LdaMulticore(bow_corpus, num_topics=self.k, id2word=dictionary,
-                                                passes=2, workers=2, minimum_probability=0.0)
+        lda_model = LdaMulticore(bow_corpus, num_topics=self.k, id2word=dictionary,
+                                passes=2, workers=2, minimum_probability=0.0)
 
         self.model = lda_model
         self.id2word = dictionary

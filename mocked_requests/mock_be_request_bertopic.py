@@ -11,7 +11,9 @@ mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-R
 file_name = wget.download(mock_data_url)
 
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-data = data.head(1000)
+data = data.head(750)
+
+data.info()
 
 os.system("rm ML_WIFI_preprocessed.csv")
 
