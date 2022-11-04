@@ -11,7 +11,7 @@ mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-R
 file_name = wget.download(mock_data_url)
 
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-data = data.head(750)
+data = data.sample(750).reset_index()
 
 data.info()
 
@@ -20,6 +20,7 @@ os.system("rm ML_WIFI_preprocessed.csv")
 json_req = {"documents": []}
 
 ids = data.index.tolist()
+ids = list(map(lambda x: str(x), ids))
 
 
 for i in range(len(ids)):
@@ -58,6 +59,10 @@ plot_names = [
 
 for plot_name in plot_names:
     encoded = json_res[plot_name]
+
+    if encoded == None:
+        continue
+
     html_code = base64.b64decode(encoded).decode("utf-8")
     with open(f"{plot_name}.html", "w") as html_page:
         html_page.write(html_code)

@@ -77,6 +77,11 @@ class SlowAPI(Resource):
         plots = bertopic.get_plots(texts)
 
         for plot_name, plot in plots.items():
+            
+            if plot == None:
+                json_res[plot_name] = None
+                continue
+
             file_name = f"{plot_name}.html"
             plot.write_html(file_name)
             with open(file_name, "rb") as html_plot:
@@ -86,6 +91,9 @@ class SlowAPI(Resource):
             os.system(f"rm {file_name}")
 
         return json_res
+
+
+
 
 class FastAPI(Resource):
 

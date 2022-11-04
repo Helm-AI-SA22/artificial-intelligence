@@ -17,6 +17,7 @@ os.system("rm ML_WIFI_preprocessed.csv")
 json_req = {"documents": []}
 
 ids = data.index.tolist()
+ids = list(map(lambda x: str(x), ids))
 
 
 for i in range(len(ids)):
