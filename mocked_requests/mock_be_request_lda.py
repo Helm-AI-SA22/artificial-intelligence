@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import base64
 import json
+import time
 
 
 mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-Review-of-Wi-Fi-and-Machine-Learning-Integration-with-Topic-Modeling-Techniques/main/ML_WIFI_preprocessed.csv"
@@ -29,8 +30,12 @@ for i in range(len(ids)):
     json_req["documents"].append(document)
 
 url = "http://127.0.0.1:5000/fast"
+
+
+start = time.time()
 response = requests.post(url=url, json=json_req)
 json_res = response.json() # returns a dict
+print(time.time()-start)
 
 with open('response.json', 'w') as fp:
     json.dump(json_res, fp)

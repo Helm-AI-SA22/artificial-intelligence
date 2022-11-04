@@ -21,13 +21,19 @@ model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2",
 mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-Review-of-Wi-Fi-and-Machine-Learning-Integration-with-Topic-Modeling-Techniques/main/ML_WIFI_preprocessed.csv"
 file_name = wget.download(mock_data_url)
 
+
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-data = data.sample(350)
-data.info()
+n = int(len(data)*0.25) 
+# print(len(data))
+# data = print(len(data))
+print("\n" + str(n))
+
+data = data.sample(n)
+# data.info()
 
 os.system("rm ML_WIFI_preprocessed.csv")
 
-texts = data["text"]
+texts = data["text"].tolist()
 
 start = time.time()
 topics, _ = model.fit_transform(texts)

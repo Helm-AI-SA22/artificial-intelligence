@@ -15,9 +15,11 @@ import numpy as np
 import pyLDAvis
 import pyLDAvis.gensim_models
 import nltk
+import os
 # nltk.download('wordnet')
 nltk.download('omw-1.4')
 
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 class TopicModel:
@@ -78,6 +80,31 @@ class LDAModel(TopicModel):
     def __init__(self, k):
         super().__init__()
         self.k = k
+
+
+    def get_topics_num(self, texts):
+        
+        frac = 0.25
+
+        n = int(len(texts)*frac)
+
+        texts_series = pd.Series(texts)
+        texts_series = texts_series.sample(n)
+
+
+        umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
+                        metric='cosine', random_state=13)
+
+        hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
+                            cluster_selection_method='eom', prediction_data=True, 
+                            min_samples=10)
+
+        infering_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
+                        umap_model=umap_model, hdbscan_model=hdbscan_model, n_gram_range=(1, 3))
+
+        topics, _ = infering_model.fit_transform(texts)
+
+        return len(set(topics))
     
     def train(self, texts):
 
@@ -103,6 +130,12 @@ class LDAModel(TopicModel):
         # dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
         bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
+
+
+        print("PROVA1")
+        self.k = self.get_topics_num(texts)
+        print("PROVA2")
+
         lda_model = gensim.models.LdaMulticore(bow_corpus, num_topics=self.k, id2word=dictionary,
                                                 passes=2, workers=2, minimum_probability=0.0)
 
