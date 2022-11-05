@@ -7,6 +7,7 @@ import pandas as pd
 import json
 import wget
 import os
+from utils import pre_load_bert_model
 
 app = Flask(__name__)
 api = Api(app)
@@ -163,10 +164,14 @@ class FastAPI(Resource):
 
 if __name__ == "__main__":
 
-    bertopic = BERTopicModel()
-    bertopic.load_model()
+    pre_load_bert_model("all-MiniLM-L6-v2")
+    pre_load_bert_model("paraphrase-MiniLM-L3-v2")
 
-    lda = LDAModel(5)
+    bertopic = BERTopicModel()
+    lda = LDAModel()
+
+    bertopic.load_model()
+    lda.load_model()
 
     api.add_resource(SlowAPI, "/slow")
     api.add_resource(FastAPI, "/fast")

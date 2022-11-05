@@ -1,6 +1,7 @@
 import abc
 import pandas as pd
 from bertopic import BERTopic
+from utils import visualize_topics
 from umap import UMAP
 from hdbscan import HDBSCAN
 from gensim.models import LdaMulticore
@@ -16,9 +17,7 @@ import nltk
 import os
 # nltk.download('wordnet')
 nltk.download('omw-1.4')
-
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
+nltk.download('wordnet')
 
 class TopicModel:
     
@@ -56,6 +55,7 @@ class BERTopicModel(TopicModel):
                         umap_model=umap_model, hdbscan_model=hdbscan_model, 
                         n_gram_range=(1, 3), calculate_probabilities=True)
 
+
     def train(self, texts):
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, "-")
@@ -76,13 +76,18 @@ class BERTopicModel(TopicModel):
             plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
             plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
             plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+            # plots["topic_clusters_plot"] = self.model.visualize_topics()
+            plots["visualize_topcis"] = visualize_topics(self.model)
 
             try:
                 plots["topic_clusters_plot"] = self.model.visualize_topics()
             except Exception:
-                print("Error in creating the plot")
-                plots["topic_clusters_plot"] = None
-
+                try:
+                    print("Error in creating the plot")
+                    plots["topic_clusters_plot"] = visualize_topics(self.model)
+                except Exception:
+                    print("Error in creating the plot")
+                    plots["topic_clusters_plot"] = None
 
             # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
         return plots
@@ -90,23 +95,11 @@ class BERTopicModel(TopicModel):
 
 class LDAModel(TopicModel):
 
-    def __init__(self, k):
+    def __init__(self):
         super().__init__()
-        self.k = k
 
 
-    def get_topics_num(self, texts):
-        
-        frac = 0.25
-
-        n = int(len(texts)*frac)
-
-        print(f"\n {n} \n")
-
-        texts_series = pd.Series(texts)
-        texts_series = texts_series.sample(n).tolist()
-
-
+    def load_model(self):
         umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
                         metric='cosine', random_state=13)
 
@@ -114,12 +107,26 @@ class LDAModel(TopicModel):
                             cluster_selection_method='eom', prediction_data=True, 
                             min_samples=10)
 
-        infering_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
-                        umap_model=umap_model, hdbscan_model=hdbscan_model, n_gram_range=(1, 3))
+        self.inferring_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
+                                umap_model=umap_model, hdbscan_model=hdbscan_model,
+                                n_gram_range=(1, 3))
 
-        topics, _ = infering_model.fit_transform(texts_series)
+
+    def get_topics_num(self, texts):
+        
+        frac = 0.15
+
+        n = int(len(texts)*frac)
+
+        texts_series = pd.Series(texts)
+        texts_series = texts_series.sample(n).tolist()
+
+        topics, _ = self.inferring_model.fit_transform(texts_series)
+
+        # self.topics = topics
 
         return len(set(topics))
+
     
     def train(self, texts):
 
@@ -146,17 +153,15 @@ class LDAModel(TopicModel):
 
         bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-        self.k = self.get_topics_num(texts)
+        self.num_topics = self.get_topics_num(texts)
+        self.num_topics = self.num_topics if self.num_topics > 1 else 2
 
-        lda_model = LdaMulticore(bow_corpus, num_topics=self.k, id2word=dictionary,
+        lda_model = LdaMulticore(bow_corpus, num_topics=self.num_topics, id2word=dictionary,
                                 passes=2, workers=2, minimum_probability=0.0)
 
         self.model = lda_model
         self.id2word = dictionary
         self.corupus = bow_corpus
-
-        # for idx, topic in lda_model.print_topics(-1):
-        #     print('Topic: {} \nWords: {}'.format(idx, topic))
 
         probabilities = []
 
@@ -165,7 +170,7 @@ class LDAModel(TopicModel):
 
         topn = 5
         names = []
-        for i in range(self.k):
+        for i in range(self.num_topics):
             terms = lda_model.get_topic_terms(i, topn=topn)
             topic_title = ""
             for term in terms:
@@ -176,6 +181,7 @@ class LDAModel(TopicModel):
                 
 
         return probabilities, names
+
 
     def get_plots(self):
         p = pyLDAvis.gensim_models.prepare(self.model, self.corupus, self.id2word)

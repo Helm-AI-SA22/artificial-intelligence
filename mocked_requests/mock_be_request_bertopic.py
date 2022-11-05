@@ -11,9 +11,9 @@ mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-R
 file_name = wget.download(mock_data_url)
 
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-data = data.sample(750).reset_index()
+data = data.head(750).reset_index()
 
-data.info()
+# data.info()
 
 os.system("rm ML_WIFI_preprocessed.csv")
 
@@ -32,11 +32,16 @@ for i in range(len(ids)):
 
     json_req["documents"].append(document)
 
+with open('request.json', 'w') as fp:
+    json.dump(json_req, fp)
+
 url = "http://127.0.0.1:5000/slow"
 
 start = time.time()
 response = requests.post(url=url, json=json_req)
 json_res = response.json() # returns a dict
+
+print()
 print(time.time()-start)
 
 with open('response.json', 'w') as fp:

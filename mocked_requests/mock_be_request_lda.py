@@ -35,6 +35,8 @@ url = "http://127.0.0.1:5000/fast"
 start = time.time()
 response = requests.post(url=url, json=json_req)
 json_res = response.json() # returns a dict
+
+print()
 print(time.time()-start)
 
 with open('response.json', 'w') as fp:
