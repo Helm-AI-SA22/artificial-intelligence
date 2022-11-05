@@ -130,15 +130,14 @@ class LDAModel(TopicModel):
     
     def train(self, texts):
 
-        def lemmatize_stemming(text):
-            stemmer = SnowballStemmer('english')
-            return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+        def lemmatize(text):
+            return WordNetLemmatizer().lemmatize(text, pos='v')
 
         def preprocess(text):
             result = []
             for token in gensim.utils.simple_preprocess(text):
                 if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3:
-                    result.append(lemmatize_stemming(token))
+                    result.append(lemmatize(token))
             return result
 
 
