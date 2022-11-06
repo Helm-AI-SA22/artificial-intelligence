@@ -7,6 +7,42 @@ from bertopic import BERTopic
 from sklearn.decomposition import PCA
 
 class BERTopicWrapper(BERTopic):
+
+    def __init__(self,
+                 language: str = "english",
+                 top_n_words: int = 10,
+                 n_gram_range: Tuple[int, int] = (1, 1),
+                 min_topic_size: int = 10,
+                 nr_topics: Union[int, str] = None,
+                 low_memory: bool = False,
+                 calculate_probabilities: bool = False,
+                 diversity: float = None,
+                 seed_topic_list: List[List[str]] = None,
+                 embedding_model=None,
+                 umap_model = None,
+                 hdbscan_model = None,
+                 vectorizer_model = None,
+                 ctfidf_model = None,
+                 verbose: bool = False,
+                 ):
+        super().__init__(language,
+                 top_n_words,
+                 n_gram_range,
+                 min_topic_size,
+                 nr_topics,
+                 low_memory,
+                 calculate_probabilities,
+                 diversity,
+                 seed_topic_list,
+                 embedding_model,
+                 umap_model,
+                 hdbscan_model,
+                 vectorizer_model,
+                 ctfidf_model,
+                 verbose)
+        self.temp_umap = umap_model
+        
+
     def fit_transform(self,
                       documents: List[str],
                       embeddings: np.ndarray = None,
@@ -40,12 +76,12 @@ class BERTopicWrapper(BERTopic):
             umap_embeddings = self._reduce_dimensionality(embeddings, y)
             print("Executed dimensionality reduction with UMAP")
         except Exception:
-            self.temp_umap = self.umap
             self.umap = PCA(n_components=2)
             if self.seed_topic_list is not None and self.embedding_model is not None:
                 y, embeddings = self._guided_topic_modeling(embeddings)
-                print("Executed dimensionality reduction with PCA")
             umap_embeddings = self._reduce_dimensionality(embeddings, y)
+            print("Executed dimensionality reduction with PCA")
+
 
         # Cluster UMAP embeddings with HDBSCAN
         documents, probabilities = self._cluster_embeddings(umap_embeddings, documents)

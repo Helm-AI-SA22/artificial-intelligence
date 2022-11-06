@@ -69,7 +69,7 @@ class BERTopicModel(TopicModel):
                             cluster_selection_method='eom', prediction_data=True, 
                             min_samples=10)
 
-        self.model = BERTopicWrapper(verbose=True, embedding_model="all-MiniLM-L6-v2", 
+        self.model = BERTopic(verbose=True, embedding_model="all-MiniLM-L6-v2", 
                         umap_model=umap_model, hdbscan_model=hdbscan_model, 
                         n_gram_range=(1, 3), calculate_probabilities=True)
 
