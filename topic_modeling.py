@@ -99,7 +99,7 @@ class BERTopicModel(TopicModel):
 
         def create_plot(plot_func, *params):
             try:
-                return plot_func() if len(params) == 0 else plot_func(params)
+                return plot_func(*params)
             except Exception:
                 return None
 
@@ -112,7 +112,7 @@ class BERTopicModel(TopicModel):
         plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)#self.model.visualize_topics()
 
         # plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-        # plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
+        # plots["topics_words_score_plot"] = self.model.visualize_barchart(None, self.num_topics)
         # plots["topics_similarity_plot"] = self.model.visualize_heatmap()
         # # plots["topic_clusters_plot"] = self.model.visualize_topics()
         # plots["topic_clusters_plot"] = visualize_topics(self.model)#self.model.visualize_topics()
