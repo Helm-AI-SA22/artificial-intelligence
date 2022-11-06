@@ -15,7 +15,6 @@ class BERTopicWrapper(BERTopic):
 
         check_documents_type(documents)
         check_embeddings_shape(embeddings, documents)
-        self.temp_umap = None
 
         documents = pd.DataFrame({"Document": documents,
                                   "ID": range(len(documents)),
