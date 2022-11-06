@@ -11,9 +11,9 @@ from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from nltk.stem.porter import *
-from bertopic_wrapper import BERTopicWrapper
 import pyLDAvis
 import pyLDAvis.gensim_models
+from sklearn.decomposition import PCA
 import nltk
 import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -38,22 +38,6 @@ class TopicModel:
     def get_plots(self):
         pass
 
-    def preprocess(self, text):
-
-        def lemmatize(text):
-            return WordNetLemmatizer().lemmatize(text, pos='v')
-
-        def process(text):
-            result = []
-            for token in gensim.utils.simple_preprocess(text):
-                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
-                    result.append(lemmatize(token))
-            return result
-
-
-        text = pd.Series(text)
-        return text.map(process)
-
 
 
 class BERTopicModel(TopicModel):
@@ -75,8 +59,6 @@ class BERTopicModel(TopicModel):
 
 
     def train(self, texts):
-
-        texts = self.preprocess(texts).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
 
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, "-")
@@ -111,24 +93,6 @@ class BERTopicModel(TopicModel):
         # plots["topic_clusters_plot"] = self.model.visualize_topics()
         plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)
 
-        # plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-        # plots["topics_words_score_plot"] = self.model.visualize_barchart(None, self.num_topics)
-        # plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-        # # plots["topic_clusters_plot"] = self.model.visualize_topics()
-        # plots["topic_clusters_plot"] = visualize_topics(self.model)#self.model.visualize_topics()
-        
-        # try:
-        #     plots["topic_clusters_plot"] = self.model.visualize_topics()
-        # except Exception:
-        #     try:
-        #         print("Error in creating the plot")
-        #         plots["topic_clusters_plot"] = visualize_topics(self.model)
-        #     except Exception:
-        #         print("Error in creating the plot")
-        #         plots["topic_clusters_plot"] = None
-
-        # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
-
         return plots
 
 
@@ -149,9 +113,26 @@ class LDAModel(TopicModel):
                             cluster_selection_method='eom', prediction_data=True, 
                             min_samples=10)
 
-        self.inferring_model = BERTopicWrapper(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
+        self.inferring_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
                                 umap_model=umap_model, hdbscan_model=hdbscan_model,
                                 n_gram_range=(1, 3))
+
+
+    def preprocess(self, text):
+
+        def lemmatize(text):
+            return WordNetLemmatizer().lemmatize(text, pos='v')
+
+        def process(text):
+            result = []
+            for token in gensim.utils.simple_preprocess(text):
+                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
+                    result.append(lemmatize(token))
+            return result
+
+
+        text = pd.Series(text)
+        return text.map(process)
 
 
     def get_topics_num(self, texts):

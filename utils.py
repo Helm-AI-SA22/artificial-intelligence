@@ -8,7 +8,6 @@ from typing import List
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import plotly.express as px
-from bertopic_wrapper import BERTopicWrapper
 
 
 def pre_load_bert_model(backend):
@@ -22,7 +21,7 @@ def pre_load_bert_model(backend):
                         cluster_selection_method='eom', prediction_data=True, 
                         min_samples=10)
 
-    model = BERTopicWrapper(verbose=True, embedding_model="all-MiniLM-L6-v2", 
+    model = BERTopic(verbose=True, embedding_model=backend, 
                     umap_model=umap_model, hdbscan_model=hdbscan_model, 
                     n_gram_range=(1, 3), calculate_probabilities=True)
 
