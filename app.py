@@ -5,6 +5,8 @@ from topic_modeling import BERTopicModel, LDAModel
 from utils import pre_load_bert_model
 from handler import fast_api_handler, slow_api_handler
 from flask_cors import CORS
+import os
+os.environ["SENTENCE_TRANSFORMERS_HOME"] = f"{os.getcwd()}/.cache/"
 
 
 app = Flask(__name__)
