@@ -1,5 +1,3 @@
 .env/
 __pycache__/
 .cache/
-mocked_requests/try_be.json
-mocked_requests/test.py

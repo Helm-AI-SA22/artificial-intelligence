@@ -11,7 +11,7 @@ from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from nltk.stem.porter import *
-import numpy as np
+from bertopic_wrapper import BERTopicWrapper
 import pyLDAvis
 import pyLDAvis.gensim_models
 import nltk
@@ -69,7 +69,7 @@ class BERTopicModel(TopicModel):
                             cluster_selection_method='eom', prediction_data=True, 
                             min_samples=10)
 
-        self.model = BERTopic(verbose=True, embedding_model="all-MiniLM-L6-v2", 
+        self.model = BERTopicWrapper(verbose=True, embedding_model="all-MiniLM-L6-v2", 
                         umap_model=umap_model, hdbscan_model=hdbscan_model, 
                         n_gram_range=(1, 3), calculate_probabilities=True)
 
@@ -109,7 +109,7 @@ class BERTopicModel(TopicModel):
         plots["topics_words_score_plot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
         plots["topics_similarity_plot"] = create_plot(self.model.visualize_heatmap)
         # plots["topic_clusters_plot"] = self.model.visualize_topics()
-        plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)#self.model.visualize_topics()
+        plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)
 
         # plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
         # plots["topics_words_score_plot"] = self.model.visualize_barchart(None, self.num_topics)
@@ -149,7 +149,7 @@ class LDAModel(TopicModel):
                             cluster_selection_method='eom', prediction_data=True, 
                             min_samples=10)
 
-        self.inferring_model = BERTopic(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
+        self.inferring_model = BERTopicWrapper(verbose=True, embedding_model="paraphrase-MiniLM-L3-v2", 
                                 umap_model=umap_model, hdbscan_model=hdbscan_model,
                                 n_gram_range=(1, 3))
 
