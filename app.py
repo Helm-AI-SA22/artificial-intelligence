@@ -4,8 +4,12 @@ from flask_restx import Api, Resource, reqparse
 from topic_modeling import BERTopicModel, LDAModel
 from utils import pre_load_bert_model
 from handler import fast_api_handler, slow_api_handler
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 api = Api(app)
 parser = reqparse.RequestParser()
 

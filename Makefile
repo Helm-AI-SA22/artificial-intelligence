@@ -37,7 +37,7 @@ init: build create-environment install
 build:
 	@echo "============ ${TB}${CB}Building and start${CN} ${CR}${CONTAINER_NAME}${CN} ..."
 	@docker build -f ${DOCKERFILE_NAME} -t ${IMAGE_NAME} .
-	@docker run -itd --name ${CONTAINER_NAME} -v ${CURDIR}/:${WORKING_DIR_MOUNT} -p 5000:5000 ${IMAGE_NAME} bash -c "/bin/sleep infinity"
+	@docker run -itd --name ${CONTAINER_NAME} -v ${CURDIR}/:${WORKING_DIR_MOUNT} -p 5001:5000 ${IMAGE_NAME} bash -c "/bin/sleep infinity"
 	@echo "============ Done!"
 
 destroy:
