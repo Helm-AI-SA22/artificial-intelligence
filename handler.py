@@ -18,21 +18,27 @@ def slow_api_handler(json_req, model):
     json_res["documents"] = []
 
     for doc_info in zip(ids, probs):
-        id, prob_unorm = doc_info
-        prob = prob_unorm/prob_unorm.sum()
+        id, prob = doc_info
 
         document = {
             "id": id,
             "topics": []
         }
 
-        for topic in range(len(prob)):
-            topic_info = {
-                "id": topic,
-                "affinity": prob[topic]
-            }
+        if prob.sum() > 0:
 
-            document["topics"].append(topic_info)
+            for topic in range(len(prob)):
+                topic_info = {
+                    "id": topic,
+                    "affinity": prob[topic]
+                }
+
+                document["topics"].append(topic_info)
+        
+        document["topics"].append({
+            "id": -1,
+            "affinity": 1 - prob.sum()
+        })
 
         json_res["documents"].append(document)
 
@@ -46,6 +52,11 @@ def slow_api_handler(json_req, model):
             "name": topic_name
         }
         json_res["topics"].append(topic)
+
+    json_res["topics"].append({
+        "id": -1,
+        "name": "noise"
+    })
 
     print("Generating the plots")
     plots = model.get_plots()

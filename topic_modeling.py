@@ -86,31 +86,46 @@ class BERTopicModel(TopicModel):
 
         if -1 in all_topics:
             all_topics.remove(-1)
-        
+            names = names[1:]
+                    
         self.num_topics = len(all_topics)
 
-        return topics, probs, names[1:]
+        return topics, probs, names
 
 
     def get_plots(self):
 
         assert self.trained == True
 
-        plots = {}
-        plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-        plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
-        plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-        # plots["topic_clusters_plot"] = self.model.visualize_topics()
-        
-        try:
-            plots["topic_clusters_plot"] = self.model.visualize_topics()
-        except Exception:
+        def create_plot(plot_func, *params):
             try:
-                print("Error in creating the plot")
-                plots["topic_clusters_plot"] = visualize_topics(self.model)
+                return plot_func() if len(params) == 0 else plot_func(params)
             except Exception:
-                print("Error in creating the plot")
-                plots["topic_clusters_plot"] = None
+                return None
+
+        plots = {}
+
+        plots["hierarchical_clustering_plot"] = create_plot(self.model.visualize_hierarchy)
+        plots["topics_words_score_plot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
+        plots["topics_similarity_plot"] = create_plot(self.model.visualize_heatmap)
+        # plots["topic_clusters_plot"] = self.model.visualize_topics()
+        plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)#self.model.visualize_topics()
+
+        # plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
+        # plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
+        # plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+        # # plots["topic_clusters_plot"] = self.model.visualize_topics()
+        # plots["topic_clusters_plot"] = visualize_topics(self.model)#self.model.visualize_topics()
+        
+        # try:
+        #     plots["topic_clusters_plot"] = self.model.visualize_topics()
+        # except Exception:
+        #     try:
+        #         print("Error in creating the plot")
+        #         plots["topic_clusters_plot"] = visualize_topics(self.model)
+        #     except Exception:
+        #         print("Error in creating the plot")
+        #         plots["topic_clusters_plot"] = None
 
         # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
 
