@@ -80,7 +80,7 @@ def slow_api_handler(json_req, model):
 
 
 
-def fast_api_handler(json_req, model):
+def fast_api_handler(json_req, model, num_topics=None):
 
     json_res = {}
 
@@ -92,7 +92,10 @@ def fast_api_handler(json_req, model):
 
 
     print("Started topic modeling with LDA")
-    probs, names = model.train(texts)
+    if num_topics is None:
+        probs, names = model.train(texts)
+    else:
+        probs, names = model.train(texts, num_topics)
 
     json_res["documents"] = []
 

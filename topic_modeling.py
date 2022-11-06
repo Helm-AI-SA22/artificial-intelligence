@@ -151,7 +151,7 @@ class LDAModel(TopicModel):
         return len(set(topics))
 
     
-    def train(self, texts):
+    def train(self, texts, num_topics = None):
 
         # lemmatization, stemming and stopword removal
         processed_docs = self.preprocess(texts)
@@ -162,8 +162,12 @@ class LDAModel(TopicModel):
 
         bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-        self.num_topics = self.get_topics_num(texts)
-        self.num_topics = self.num_topics if self.num_topics > 1 else 2
+
+        if num_topics is None:
+            self.num_topics = self.get_topics_num(texts)
+            self.num_topics = self.num_topics if self.num_topics > 0 else 1
+        else:
+            self.num_topics = num_topics
 
         lda_model = LdaMulticore(bow_corpus, num_topics=self.num_topics, id2word=dictionary,
                                 passes=2, workers=2, minimum_probability=0.0)
