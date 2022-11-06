@@ -58,12 +58,14 @@ def visualize_topics(topic_model,
     indices = np.array([all_topics.index(topic) for topic in topics])
     embeddings = topic_model.c_tf_idf_.toarray()[indices]
     embeddings = MinMaxScaler().fit_transform(embeddings)
-    pca = PCA(n_components=2)
-    embeddings = pca.fit_transform(embeddings)
+
+    try:
+        embeddings = UMAP(n_neighbors=2, n_components=2, metric='hellinger').fit_transform(embeddings)
+    except Exception:
+        embeddings = PCA(n_components=2).fit_transform(embeddings)
 
     # print(type(embeddings))
     # print(embeddings.shape)
-    # embeddings = UMAP(n_neighbors=2, n_components=2, metric='hellinger').fit_transform(embeddings)
 
     # Visualize with plotly
     df = pd.DataFrame({"x": embeddings[:, 0], "y": embeddings[:, 1],
