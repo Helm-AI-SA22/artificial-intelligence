@@ -6,6 +6,7 @@ from umap import UMAP
 from hdbscan import HDBSCAN
 from gensim.models import LdaMulticore
 import gensim
+from functools import reduce
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
@@ -15,7 +16,7 @@ import pyLDAvis
 import pyLDAvis.gensim_models
 import nltk
 import os
-# nltk.download('wordnet')
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 nltk.download('omw-1.4')
 nltk.download('wordnet')
 
@@ -37,6 +38,23 @@ class TopicModel:
     def get_plots(self):
         pass
 
+    def preprocess(self, text):
+
+        def lemmatize(text):
+            return WordNetLemmatizer().lemmatize(text, pos='v')
+
+        def process(text):
+            result = []
+            for token in gensim.utils.simple_preprocess(text):
+                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
+                    result.append(lemmatize(token))
+            return result
+
+
+        text = pd.Series(text)
+        return text.map(process)
+
+
 
 class BERTopicModel(TopicModel):
 
@@ -57,6 +75,9 @@ class BERTopicModel(TopicModel):
 
 
     def train(self, texts):
+
+        texts = self.preprocess(texts).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
+
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, "-")
         self.trained = True
@@ -70,27 +91,33 @@ class BERTopicModel(TopicModel):
 
         return topics, probs, names[1:]
 
-    def get_plots(self, texts):
+
+    def get_plots(self):
+
+        assert self.trained == True
+
         plots = {}
-        if self.trained:
-            plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
-            plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
-            plots["topics_similarity_plot"] = self.model.visualize_heatmap()
-            # plots["topic_clusters_plot"] = self.model.visualize_topics()
-            plots["visualize_topcis"] = visualize_topics(self.model)
-
+        plots["hierarchical_clustering_plot"] = self.model.visualize_hierarchy()
+        plots["topics_words_score_plot"] = self.model.visualize_barchart(top_n_topics=self.num_topics)
+        plots["topics_similarity_plot"] = self.model.visualize_heatmap()
+        # plots["topic_clusters_plot"] = self.model.visualize_topics()
+        
+        try:
+            plots["topic_clusters_plot"] = self.model.visualize_topics()
+        except Exception:
             try:
-                plots["topic_clusters_plot"] = self.model.visualize_topics()
+                print("Error in creating the plot")
+                plots["topic_clusters_plot"] = visualize_topics(self.model)
             except Exception:
-                try:
-                    print("Error in creating the plot")
-                    plots["topic_clusters_plot"] = visualize_topics(self.model)
-                except Exception:
-                    print("Error in creating the plot")
-                    plots["topic_clusters_plot"] = None
+                print("Error in creating the plot")
+                plots["topic_clusters_plot"] = None
 
-            # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
+        # plots["document_clusters_plot"] = self.model.visualize_documents(texts)
+
         return plots
+
+
+
 
 
 class LDAModel(TopicModel):
@@ -130,21 +157,8 @@ class LDAModel(TopicModel):
     
     def train(self, texts):
 
-        def lemmatize(text):
-            return WordNetLemmatizer().lemmatize(text, pos='v')
-
-        def preprocess(text):
-            result = []
-            for token in gensim.utils.simple_preprocess(text):
-                if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3:
-                    result.append(lemmatize(token))
-            return result
-
-
-        documents = pd.Series(texts)
-
         # lemmatization, stemming and stopword removal
-        processed_docs = documents.map(preprocess)
+        processed_docs = self.preprocess(texts)
 
         dictionary = gensim.corpora.Dictionary(processed_docs)
         # possible filtering 
@@ -158,6 +172,7 @@ class LDAModel(TopicModel):
         lda_model = LdaMulticore(bow_corpus, num_topics=self.num_topics, id2word=dictionary,
                                 passes=2, workers=2, minimum_probability=0.0)
 
+        self.trained = True
         self.model = lda_model
         self.id2word = dictionary
         self.corupus = bow_corpus
@@ -183,5 +198,8 @@ class LDAModel(TopicModel):
 
 
     def get_plots(self):
+        
+        assert self.trained == True
+
         p = pyLDAvis.gensim_models.prepare(self.model, self.corupus, self.id2word)
         pyLDAvis.save_html(p, 'lda_plot.html')
