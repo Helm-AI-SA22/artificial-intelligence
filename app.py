@@ -31,10 +31,15 @@ class SlowAPI(Resource):
             json_req = request.get_json()
         else:
             return 'Content-Type not supported!'
+            
         try:
             return slow_api_handler(json_req, bertopic)
         except Exception:
-            return fast_api_handler(json_req, lda, 2)
+            try:
+                return fast_api_handler(json_req, lda)
+            except Exception:
+                return fast_api_handler(json_req, lda, 2)
+
 
 
 class FastAPI(Resource):
