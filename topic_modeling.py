@@ -46,8 +46,9 @@ class BERTopicModel(TopicModel):
         super().__init__()
 
     def load_model(self):
-        umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
-                        metric='cosine', random_state=13)
+        # umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
+        #                 metric='cosine', random_state=13)
+        umap_model = PCA(n_components=5)
 
         hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
                             cluster_selection_method='eom', prediction_data=True, 
@@ -106,8 +107,9 @@ class LDAModel(TopicModel):
 
 
     def load_model(self):
-        umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
-                        metric='cosine', random_state=13)
+        # umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
+        #                 metric='cosine', random_state=13)
+        umap_model = PCA(n_components=5)
 
         hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
                             cluster_selection_method='eom', prediction_data=True, 
