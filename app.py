@@ -39,7 +39,7 @@ class SlowAPI(Resource):
             try:
                 return fast_api_handler(json_req, lda)
             except Exception:
-                print("Error during topic modeling. ")
+                print("Error during topic modeling")
                 return fast_api_handler(json_req, lda, 2)
 
 
@@ -59,6 +59,7 @@ class FastAPI(Resource):
         try:
             return fast_api_handler(json_req, lda)
         except Exception:
+            print("Error during topic modeling")
             return fast_api_handler(json_req, lda, 2)
         
 

@@ -139,7 +139,7 @@ class LDAModel(TopicModel):
 
     def get_topics_num(self, texts):
         
-        frac = 0.15
+        frac = 0.25
 
         n = int(len(texts)*frac)
 
