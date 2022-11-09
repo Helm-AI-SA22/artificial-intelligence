@@ -14,9 +14,9 @@ def pre_load_bert_model(backend):
 
     print(f"Preloading BERTopic {backend} backend")
 
-    # umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
-    #                     metric='cosine', random_state=13)
-    umap_model = PCA(n_components=5)
+    umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
+                        metric='cosine', random_state=13)
+    # umap_model = PCA(n_components=5)
 
     hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
                         cluster_selection_method='eom', prediction_data=True, 
@@ -60,10 +60,10 @@ def visualize_topics(topic_model,
     embeddings = MinMaxScaler().fit_transform(embeddings)
     embeddings = PCA(n_components=2).fit_transform(embeddings)
 
-    # try:
-    #     embeddings = UMAP(n_neighbors=2, n_components=2, metric='hellinger').fit_transform(embeddings)
-    # except Exception:
-    #     embeddings = PCA(n_components=2).fit_transform(embeddings)
+    try:
+        embeddings = UMAP(n_neighbors=2, n_components=2, metric='hellinger').fit_transform(embeddings)
+    except Exception:
+        embeddings = PCA(n_components=2).fit_transform(embeddings)
 
     # print(type(embeddings))
     # print(embeddings.shape)
