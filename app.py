@@ -7,6 +7,8 @@ from handler import fast_api_handler, slow_api_handler
 from flask_cors import CORS
 import os
 os.environ["SENTENCE_TRANSFORMERS_HOME"] = f"{os.getcwd()}/.cache/"
+import warnings
+warnings.filterwarnings("ignore")
 
 
 app = Flask(__name__)
