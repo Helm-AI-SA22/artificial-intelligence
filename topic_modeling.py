@@ -38,6 +38,22 @@ class TopicModel:
     def get_plots(self):
         pass
 
+    def preprocess(self, text):
+
+        def lemmatize(text):
+            return WordNetLemmatizer().lemmatize(text, pos='v')
+
+        def process(text):
+            result = []
+            for token in gensim.utils.simple_preprocess(text):
+                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
+                    result.append(lemmatize(token))
+            return result
+
+
+        text = pd.Series(text)
+        return text.map(process)
+
 
 
 class BERTopicModel(TopicModel):
@@ -48,6 +64,7 @@ class BERTopicModel(TopicModel):
     def load_model(self):
         umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
                         metric='cosine', random_state=13)
+        # umap_model = PCA(n_components=5)
 
         hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
                             cluster_selection_method='eom', prediction_data=True, 
@@ -59,6 +76,8 @@ class BERTopicModel(TopicModel):
 
 
     def train(self, texts):
+
+        texts = self.preprocess(texts).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
 
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, "-")
@@ -90,7 +109,6 @@ class BERTopicModel(TopicModel):
         plots["hierarchical_clustering_plot"] = create_plot(self.model.visualize_hierarchy)
         plots["topics_words_score_plot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
         plots["topics_similarity_plot"] = create_plot(self.model.visualize_heatmap)
-        # plots["topic_clusters_plot"] = self.model.visualize_topics()
         plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)
 
         return plots
@@ -108,6 +126,7 @@ class LDAModel(TopicModel):
     def load_model(self):
         umap_model = UMAP(n_neighbors=15, n_components=5, min_dist=0.0,
                         metric='cosine', random_state=13)
+        # umap_model = PCA(n_components=5)
 
         hdbscan_model = HDBSCAN(min_cluster_size=60, metric='euclidean',
                             cluster_selection_method='eom', prediction_data=True, 
@@ -118,26 +137,9 @@ class LDAModel(TopicModel):
                                 n_gram_range=(1, 3))
 
 
-    def preprocess(self, text):
-
-        def lemmatize(text):
-            return WordNetLemmatizer().lemmatize(text, pos='v')
-
-        def process(text):
-            result = []
-            for token in gensim.utils.simple_preprocess(text):
-                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
-                    result.append(lemmatize(token))
-            return result
-
-
-        text = pd.Series(text)
-        return text.map(process)
-
-
     def get_topics_num(self, texts):
         
-        frac = 0.15
+        frac = 0.25
 
         n = int(len(texts)*frac)
 

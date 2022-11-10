@@ -2,7 +2,7 @@ from flask import Flask
 from flask import request
 from flask_restx import Api, Resource, reqparse
 from topic_modeling import BERTopicModel, LDAModel
-from utils import pre_load_bert_model
+from utils import pre_load_bert_model, fix_plots
 from handler import fast_api_handler, slow_api_handler
 from flask_cors import CORS
 import os
@@ -37,10 +37,12 @@ class SlowAPI(Resource):
         except Exception:
             try:
                 print("Slow topic modeling failed, switching to fast")
-                return fast_api_handler(json_req, lda)
+                response =  fast_api_handler(json_req, lda)
+                return fix_plots(response)
             except Exception:
                 print("Fast topic modeling failed, switching to LDA with fixed topic number")
-                return fast_api_handler(json_req, lda, 2)
+                response = fast_api_handler(json_req, lda, 2)
+                return fix_plots(response)
 
 
 

@@ -61,6 +61,7 @@ def slow_api_handler(json_req, model):
     print("Generating the plots")
     plots = model.get_plots()
 
+
     for plot_name, plot in plots.items():
         
         if plot == None:
