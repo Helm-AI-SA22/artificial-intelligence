@@ -60,12 +60,12 @@ def slow_api_handler(json_req, model):
 
     print("Generating the plots")
     plots = model.get_plots()
-
+    json_res["topicsVisualization"] = {}
 
     for plot_name, plot in plots.items():
         
         if plot == None:
-            json_res[plot_name] = None
+            json_res["topicsVisualization"][plot_name] = None
             continue
 
         file_name = f"{plot_name}.html"
@@ -73,7 +73,7 @@ def slow_api_handler(json_req, model):
         with open(file_name, "rb") as html_plot:
             html_text = html_plot.read()
             encoded_text = base64.b64encode(html_text).decode("utf-8")
-            json_res[plot_name] = encoded_text
+            json_res["topicsVisualization"][plot_name] = encoded_text
         os.system(f"rm {file_name}")
 
     return json_res
@@ -130,12 +130,14 @@ def fast_api_handler(json_req, model, num_topics=None):
         }
         json_res["topics"].append(topic)
 
+
+    json_res["topicsVisualization"] = {}
     model.get_plots()
-    file_name = f"lda_plot.html"
+    file_name = f"ldaPlot.html"
     with open(file_name, "rb") as html_plot:
         html_text = html_plot.read()
         encoded_text = base64.b64encode(html_text).decode("utf-8")
-        json_res["lda_plot"] = encoded_text
+        json_res["topicsVisualization"]["ldaPlot"] = encoded_text
     os.system(f"rm {file_name}")
 
     return json_res

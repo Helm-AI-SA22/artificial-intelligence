@@ -106,10 +106,10 @@ class BERTopicModel(TopicModel):
 
         plots = {}
 
-        plots["hierarchical_clustering_plot"] = create_plot(self.model.visualize_hierarchy)
-        plots["topics_words_score_plot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
-        plots["topics_similarity_plot"] = create_plot(self.model.visualize_heatmap)
-        plots["topic_clusters_plot"] = create_plot(visualize_topics, self.model)
+        plots["hierarchicalClusteringPlot"] = create_plot(self.model.visualize_hierarchy)
+        plots["topicsWordsScorePlot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
+        plots["topicsSimilarityPlot"] = create_plot(self.model.visualize_heatmap)
+        plots["topicClustersPlot"] = create_plot(visualize_topics, self.model)
 
         return plots
 

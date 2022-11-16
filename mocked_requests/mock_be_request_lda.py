@@ -47,8 +47,7 @@ plot_names = [
     "lda_plot" 
 ]
 
-for plot_name in plot_names:
-    encoded = json_res[plot_name]
-    html_code = base64.b64decode(encoded).decode("utf-8")
-    with open(f"{plot_name}.html", "w") as html_page:
-        html_page.write(html_code)
+encoded = json_res["topicsVisualization"]["ldaPlot"]
+html_code = base64.b64decode(encoded).decode("utf-8")
+with open(f"ldaPlot.html", "w") as html_page:
+    html_page.write(html_code)

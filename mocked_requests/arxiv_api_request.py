@@ -144,8 +144,8 @@ print(len(documents))
 
 dataframe = convert_to_csv(documents)
 
-os.system("rm response.xml")
-os.system("rm response.json")
+# os.system("rm response.xml")
+# os.system("rm response.json")
 
 
 dataframe.info()

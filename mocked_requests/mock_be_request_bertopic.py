@@ -11,7 +11,7 @@ mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-R
 file_name = wget.download(mock_data_url)
 
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-data = data.head(250).reset_index()
+# data = data.head(250).reset_index()
 
 # data.info()
 
@@ -41,7 +41,7 @@ start = time.time()
 response = requests.post(url=url, json=json_req)
 json_res = response.json() # returns a dict
 
-print(json_res)
+# print(json_res)
 
 print()
 print(time.time()-start)
@@ -64,8 +64,8 @@ plot_names = [
     "topics_similarity_plot"
 ]
 
-for plot_name in plot_names:
-    encoded = json_res[plot_name]
+for plot_name in json_res["topicsVisualization"].keys():
+    encoded = json_res["topicsVisualization"][plot_name]
 
     if encoded == None:
         continue
