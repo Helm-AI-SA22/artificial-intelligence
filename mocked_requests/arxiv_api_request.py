@@ -38,7 +38,7 @@ def parse_document(document):
     title = None if "title" not in document else document["title"]
 
     # get abstract
-    abstract = None if "summary" not in document else document["summary"]
+    abstract = None if "summary" not in document else document["summary"].replace("\n", " ").replace("\\", " ")
 
     # get publication date
     date = None if "published" not in document else document["published"]
