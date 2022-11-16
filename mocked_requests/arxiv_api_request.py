@@ -79,6 +79,10 @@ def parse_document(document):
     doi = None
     if "arxiv:doi" in document:
         doi = document["arxiv:doi"]["#text"]
+    elif "id" in document:
+        doi = document["id"]
+    else:
+        doi = None
 
     result = {
         "title": title, 
