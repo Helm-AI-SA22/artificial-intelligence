@@ -80,7 +80,7 @@ class BERTopicModel(TopicModel):
         texts = self.preprocess(texts).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
 
         topics, probs = self.model.fit_transform(texts)
-        names = self.model.generate_topic_labels(5, False, None, "-")
+        names = self.model.generate_topic_labels(5, False, None, " ")
         self.trained = True
 
         all_topics = list(set(topics))
@@ -192,7 +192,7 @@ class LDAModel(TopicModel):
             for term in terms:
                 term_id = term[0]
                 word = dictionary[term_id]
-                topic_title += word + "-"
+                topic_title += word + " "
             names.append(topic_title[:-1])
                 
 
@@ -204,4 +204,4 @@ class LDAModel(TopicModel):
         assert self.trained == True
 
         p = pyLDAvis.gensim_models.prepare(self.model, self.corupus, self.id2word)
-        pyLDAvis.save_html(p, 'lda_plot.html')
+        pyLDAvis.save_html(p, 'ldaPlot.html')
