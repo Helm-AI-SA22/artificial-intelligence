@@ -1,5 +1,7 @@
 import os
 import base64
+import warnings
+warnings.filterwarnings("ignore")
 
 def slow_api_handler(json_req, model):
 

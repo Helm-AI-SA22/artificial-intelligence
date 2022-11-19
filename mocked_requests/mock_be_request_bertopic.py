@@ -57,12 +57,6 @@ with open('response.json', 'w') as fp:
 #     "document_clusters_plot"
 # ]
 
-plot_names = [
-    "topic_clusters_plot" , 
-    "hierarchical_clustering_plot" ,
-    "topics_words_score_plot" ,
-    "topics_similarity_plot"
-]
 
 for plot_name in json_res["topicsVisualization"].keys():
     encoded = json_res["topicsVisualization"][plot_name]

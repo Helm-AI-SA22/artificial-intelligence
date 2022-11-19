@@ -8,6 +8,8 @@ from typing import List
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import plotly.express as px
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def pre_load_bert_model(backend):

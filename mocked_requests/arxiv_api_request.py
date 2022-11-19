@@ -8,6 +8,9 @@ import time
 import base64
 
 
+api = "fast"
+# api = "slow"
+
 def make_request(query, max_results):
 
     query_text = ""
@@ -132,7 +135,7 @@ def convert_to_csv(documents):
     return pd.DataFrame(data_dict)
     
 
-query = ["cnn"]
+query = ["cnn", "machine learning"]
 
 start = time.time()
 make_request(query, 2000)
@@ -144,8 +147,8 @@ print(len(documents))
 
 dataframe = convert_to_csv(documents)
 
-# os.system("rm response.xml")
-# os.system("rm response.json")
+os.system("rm response.xml")
+os.system("rm response.json")
 
 
 dataframe.info()
@@ -168,7 +171,7 @@ for i in range(len(ids)):
 with open('request.json', 'w') as fp:
     json.dump(json_req, fp)
 
-url = "http://127.0.0.1:5000/slow"
+url = f"http://127.0.0.1:5000/{api}"
 
 start = time.time()
 response = requests.post(url=url, json=json_req)
@@ -180,27 +183,19 @@ print(time.time()-start)
 with open('response.json', 'w') as fp:
     json.dump(json_res, fp)
 
-# plot_names = [
-#     "topic_clusters_plot" , 
-#     "hierarchical_clustering_plot" ,
-#     "topics_words_score_plot" ,
-#     "topics_similarity_plot",
-#     "document_clusters_plot"
-# ]
+if api == "slow":
+    for plot_name in json_res["topicsVisualization"].keys():
+        encoded = json_res["topicsVisualization"][plot_name]
 
-plot_names = [
-    "topic_clusters_plot" , 
-    "hierarchical_clustering_plot" ,
-    "topics_words_score_plot" ,
-    "topics_similarity_plot"
-]
+        if encoded == None:
+            continue
 
-for plot_name in plot_names:
-    encoded = json_res[plot_name]
+        html_code = base64.b64decode(encoded).decode("utf-8")
+        with open(f"{plot_name}.html", "w") as html_page:
+            html_page.write(html_code)
 
-    if encoded == None:
-        continue
-
+if api == "fast":
+    encoded = json_res["topicsVisualization"]["ldaPlot"]
     html_code = base64.b64decode(encoded).decode("utf-8")
-    with open(f"{plot_name}.html", "w") as html_page:
+    with open(f"ldaPlot.html", "w") as html_page:
         html_page.write(html_code)

@@ -43,9 +43,9 @@ print(time.time()-start)
 with open('response.json', 'w') as fp:
     json.dump(json_res, fp)
 
-plot_names = [
-    "lda_plot" 
-]
+# plot_names = [
+#     "lda_plot" 
+# ]
 
 encoded = json_res["topicsVisualization"]["ldaPlot"]
 html_code = base64.b64decode(encoded).decode("utf-8")

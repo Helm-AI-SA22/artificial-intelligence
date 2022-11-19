@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore")
 import abc
 import pandas as pd
 from bertopic import BERTopic
@@ -139,7 +141,7 @@ class LDAModel(TopicModel):
 
     def get_topics_num(self, texts):
         
-        frac = 0.25
+        frac = 0.35
 
         n = int(len(texts)*frac)
 

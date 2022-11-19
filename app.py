@@ -1,14 +1,14 @@
+import warnings
+warnings.filterwarnings("ignore")
 from flask import Flask
 from flask import request
 from flask_restx import Api, Resource, reqparse
+from handler import fast_api_handler, slow_api_handler
 from topic_modeling import BERTopicModel, LDAModel
 from utils import pre_load_bert_model, fix_plots
-from handler import fast_api_handler, slow_api_handler
 from flask_cors import CORS
 import os
 os.environ["SENTENCE_TRANSFORMERS_HOME"] = f"{os.getcwd()}/.cache/"
-import warnings
-warnings.filterwarnings("ignore")
 
 
 app = Flask(__name__)
