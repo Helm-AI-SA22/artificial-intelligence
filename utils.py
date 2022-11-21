@@ -147,9 +147,10 @@ def _plotly_topic_visualization(df: pd.DataFrame,
     return fig
 
 def fix_plots(response):
-    response["hierarchical_clustering_plot"] = None
-    response["topics_words_score_plot"] = None
-    response["topics_similarity_plot"] = None
-    response["topic_clusters_plot"] = response["lda_plot"]
-    del response["lda_plot"]
+    ldaPlot = response["topicsVisualization"]["ldaPlot"]
+    response["topicsVisualization"] = {}
+    response["topicsVisualization"]["hierarchicalClusteringPlot"] = None
+    response["topicsVisualization"]["topicsWordsScorePlot"] = None
+    response["topicsVisualization"]["topicsSimilarityPlot"] = None
+    response["topicsVisualization"]["topicPclustersPlot"] = ldaPlot
     return response

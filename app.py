@@ -37,14 +37,10 @@ class SlowAPI(Resource):
         try:
             return slow_api_handler(json_req, bertopic)
         except Exception:
-            try:
-                print("Slow topic modeling failed, switching to fast")
-                response =  fast_api_handler(json_req, lda)
-                return fix_plots(response)
-            except Exception:
-                print("Fast topic modeling failed, switching to LDA with fixed topic number")
-                response = fast_api_handler(json_req, lda, 2)
-                return fix_plots(response)
+            print("Fast topic modeling failed, switching to LDA with fixed topic number")
+            response = fast_api_handler(json_req, lda, 2)
+            response["logs"] = "Topic modeling failed. Performed emergency topic modeling with 2 topics."
+            return fix_plots(response)
 
 
 
@@ -64,7 +60,10 @@ class FastAPI(Resource):
             return fast_api_handler(json_req, lda)
         except Exception:
             print("Fast topic modeling failed, switching to LDA with fixed topic number")
-            return fast_api_handler(json_req, lda, 2)
+            response = fast_api_handler(json_req, lda, 2)
+            response["logs"] = "Topic modeling failed. Performed emergency topic modeling with 2 topics."
+            return response
+            
         
 
 if __name__ == "__main__":

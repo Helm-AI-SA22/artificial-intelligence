@@ -150,6 +150,7 @@ class LDAModel(TopicModel):
 
         topics, _ = self.inferring_model.fit_transform(texts_series)
 
+
         # self.topics = topics
 
         return len(set(topics))
