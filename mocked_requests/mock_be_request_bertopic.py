@@ -11,7 +11,7 @@ mock_data_url = "https://raw.githubusercontent.com/daniele-atzeni/A-Systematic-R
 file_name = wget.download(mock_data_url)
 
 data = pd.read_csv("ML_WIFI_preprocessed.csv")
-# data = data.head(50).reset_index()
+# data = data.head(1000).reset_index()
 
 # data.info()
 
@@ -49,21 +49,20 @@ print(time.time()-start)
 with open('response.json', 'w') as fp:
     json.dump(json_res, fp)
 
-# plot_names = [
-#     "topic_clusters_plot" , 
-#     "hierarchical_clustering_plot" ,
-#     "topics_words_score_plot" ,
-#     "topics_similarity_plot",
-#     "document_clusters_plot"
-# ]
-
-
 for plot_name in json_res["topicsVisualization"].keys():
+
     encoded = json_res["topicsVisualization"][plot_name]
+    print(encoded[:10])
 
     if encoded == None:
         continue
 
-    html_code = base64.b64decode(encoded).decode("utf-8")
-    with open(f"{plot_name}.html", "w") as html_page:
-        html_page.write(html_code)
+    if plot_name.endswith("Interactive"):
+        html_code = base64.b64decode(encoded).decode("utf-8")
+        with open(f"{plot_name}.html", "w") as html_page:
+            html_page.write(html_code)
+
+    if plot_name.endswith("Static"):
+        image_code = base64.b64decode(encoded)
+        with open(f"{plot_name}.png", "bw") as png_image:
+            png_image.write(image_code)

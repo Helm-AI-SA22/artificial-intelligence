@@ -73,8 +73,8 @@ class BERTopicModel(TopicModel):
                             min_samples=10)
 
         self.model = BERTopic(verbose=True, embedding_model="all-MiniLM-L6-v2", 
-                        umap_model=umap_model, hdbscan_model=hdbscan_model, 
-                        n_gram_range=(1, 3), calculate_probabilities=True)
+                       umap_model=umap_model, hdbscan_model=hdbscan_model, 
+                       n_gram_range=(1, 3), calculate_probabilities=True)
 
 
     def train(self, texts):
@@ -208,3 +208,4 @@ class LDAModel(TopicModel):
 
         p = pyLDAvis.gensim_models.prepare(self.model, self.corupus, self.id2word)
         pyLDAvis.save_html(p, 'ldaPlot.html')
+        # pyLDAvis.save_json(p, 'ldaJson.json')

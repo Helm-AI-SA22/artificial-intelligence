@@ -1,7 +1,12 @@
 # artificial-intelligence
 
-Quick explanation of why and how Git works as it does: https://www.simplilearn.com/tutorials/git-tutorial/what-is-git
+The AI repository for the Helm project. 
 
-Brief overview of the basic commands for Git, with further details on each one: https://www.atlassian.com/git/glossary
+## How to run the server with Docker
+Clone the repository with the command:
 
-Tutorial on how to use Git, step-by-step: https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners
+`git clone https://github.com/Helm-AI-SA22/artificial-intelligence.git`
+
+and move in the project directory with the command `cd artificial-intelligence`.
+
+Then

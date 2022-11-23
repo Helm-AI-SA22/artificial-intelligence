@@ -52,3 +52,4 @@ flask-restx==0.5.1
 gensim==4.2.0
 pyLDAvis==3.3.1
 xmltodict==0.13.0
+kaleido==0.2.1
