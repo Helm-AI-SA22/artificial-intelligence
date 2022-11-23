@@ -208,4 +208,4 @@ class LDAModel(TopicModel):
 
         p = pyLDAvis.gensim_models.prepare(self.model, self.corupus, self.id2word)
         pyLDAvis.save_html(p, 'ldaPlot.html')
-        # pyLDAvis.save_json(p, 'ldaJson.json')
+        #pyLDAvis.save_json(p, 'lda.json')
