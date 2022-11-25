@@ -64,31 +64,48 @@ def slow_api_handler(json_req, model):
     plots = model.get_plots()
     json_res["topicsVisualization"] = {}
 
+    # for plot_name, plot in plots.items():
+        
+    #     interactive_plot_name = f"{plot_name}Interactive"
+    #     static_plot_name = f"{plot_name}Static"
+
+
+    #     if plot == None:
+    #         json_res["topicsVisualization"][interactive_plot_name] = None
+    #         json_res["topicsVisualization"][static_plot_name] = None
+    #         continue
+
+    #     # generate html_plot
+    #     file_name = f"{interactive_plot_name}.html"
+    #     plot.write_html(file_name)
+    #     with open(file_name, "rb") as html_plot:
+    #         html_text = html_plot.read()
+    #         encoded_text = base64.b64encode(html_text).decode("utf-8")
+    #         json_res["topicsVisualization"][interactive_plot_name] = encoded_text
+
+    #     # generate png image
+    #     image_byte = plot.to_image(format="png")
+    #     encoded_image = base64.b64encode(image_byte).decode("utf-8")
+    #     json_res["topicsVisualization"][static_plot_name] = encoded_image
+        
+    #     os.system(f"rm {file_name}")
+
     for plot_name, plot in plots.items():
         
-        interactive_plot_name = f"{plot_name}Interactive"
-        static_plot_name = f"{plot_name}Static"
-
-
         if plot == None:
-            json_res["topicsVisualization"][interactive_plot_name] = None
-            json_res["topicsVisualization"][static_plot_name] = None
+            json_res["topicsVisualization"][plot_name] = None
             continue
 
-        # generate html_plot
-        file_name = f"{interactive_plot_name}.html"
+        file_name = f"{plot_name}.html"
         plot.write_html(file_name)
         with open(file_name, "rb") as html_plot:
             html_text = html_plot.read()
             encoded_text = base64.b64encode(html_text).decode("utf-8")
-            json_res["topicsVisualization"][interactive_plot_name] = encoded_text
-
-        # generate png image
-        image_byte = plot.to_image(format="png")
-        encoded_image = base64.b64encode(image_byte).decode("utf-8")
-        json_res["topicsVisualization"][static_plot_name] = encoded_image
-        
+            json_res["topicsVisualization"][plot_name] = encoded_text
+            
         os.system(f"rm {file_name}")
+
+
 
     return json_res
 
