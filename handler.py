@@ -6,6 +6,7 @@ warnings.filterwarnings("ignore")
 def slow_api_handler(json_req, model):
 
     json_res = {}
+    keywords = json_req["keywords"]
 
     ids = []
     texts = []
@@ -15,7 +16,7 @@ def slow_api_handler(json_req, model):
 
 
     print("Started topic modeling with BERTopic")
-    topics, probs, names = model.train(texts)
+    topics, probs, names = model.train(texts, keywords)
 
     json_res["documents"] = []
 
@@ -115,6 +116,7 @@ def slow_api_handler(json_req, model):
 def fast_api_handler(json_req, model, num_topics=None):
 
     json_res = {}
+    keywords = json_req["keywords"]
 
     ids = []
     texts = []
@@ -125,9 +127,9 @@ def fast_api_handler(json_req, model, num_topics=None):
 
     print("Started topic modeling with LDA")
     if num_topics is None:
-        probs, names = model.train(texts)
+        probs, names = model.train(texts, keywords)
     else:
-        probs, names = model.train(texts, num_topics)
+        probs, names = model.train(texts, keywords, num_topics)
 
     json_res["documents"] = []
 

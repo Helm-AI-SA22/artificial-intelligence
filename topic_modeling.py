@@ -33,22 +33,31 @@ class TopicModel:
         pass
 
     @abc.abstractmethod
-    def train(self, json_data):
+    def train(self, text, keywords):
         pass
 
     @abc.abstractmethod
     def get_plots(self):
         pass
 
-    def preprocess(self, text):
+    def preprocess(self, text, keywords):
 
         def lemmatize(text):
             return WordNetLemmatizer().lemmatize(text, pos='v')
 
+        def stem(text):
+            return SnowballStemmer("english").stem(text)
+
+        keywords_lemmatized = [lemmatize(word) for key in keywords for word in key.split(" ")]
+        keywords_stemmed = [stem(word) for key in keywords for word in key.split(" ")]
+
+        stop_keywords = set(keywords + keywords_lemmatized + keywords_stemmed)
+
+
         def process(text):
             result = []
             for token in gensim.utils.simple_preprocess(text):
-                if token not in gensim.parsing.preprocessing.STOPWORDS: #and len(token) > 3:
+                if token not in gensim.parsing.preprocessing.STOPWORDS and token not in stop_keywords:
                     result.append(lemmatize(token))
             return result
 
@@ -77,9 +86,9 @@ class BERTopicModel(TopicModel):
                        n_gram_range=(1, 3), calculate_probabilities=True)
 
 
-    def train(self, texts):
+    def train(self, texts, keywords):
 
-        texts = self.preprocess(texts).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
+        texts = self.preprocess(texts, keywords).map(lambda t: reduce(lambda a, x: a + x + " ", t, "")[:-1]).tolist()
 
         topics, probs = self.model.fit_transform(texts)
         names = self.model.generate_topic_labels(5, False, None, " ")
@@ -156,10 +165,10 @@ class LDAModel(TopicModel):
         return len(set(topics))
 
     
-    def train(self, texts, num_topics = None):
+    def train(self, texts, keywords, num_topics = None):
 
         # lemmatization, stemming and stopword removal
-        processed_docs = self.preprocess(texts)
+        processed_docs = self.preprocess(texts, keywords)
 
         dictionary = gensim.corpora.Dictionary(processed_docs)
         # possible filtering 
