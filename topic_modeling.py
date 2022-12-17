@@ -18,6 +18,7 @@ import pyLDAvis.gensim_models
 from sklearn.decomposition import PCA
 import nltk
 import os
+from keytotext import pipeline
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 nltk.download('omw-1.4')
 nltk.download('wordnet')
@@ -40,6 +41,13 @@ class TopicModel:
     def get_plots(self):
         pass
 
+    def get_title(self, title):
+        # print(title)
+        # print(title.split(" "))
+        # nlp = pipeline("k2t")
+        # return nlp(title.split(" "))
+        return title
+
     def preprocess(self, text, keywords):
 
         def lemmatize(text):
@@ -48,21 +56,32 @@ class TopicModel:
         def stem(text):
             return SnowballStemmer("english").stem(text)
 
+        keywords.append("propose")
+        keywords = [word for key in keywords for word in key.split(" ")] + keywords
+
         keywords_lemmatized = [lemmatize(word) for key in keywords for word in key.split(" ")]
+        keywords += keywords_lemmatized
+
         keywords_stemmed = [stem(word) for key in keywords for word in key.split(" ")]
+        keywords += keywords_stemmed
 
-        stop_keywords = set(keywords + keywords_lemmatized + keywords_stemmed)
+        keywords_plural = [word+"s" for key in keywords for word in key.split(" ")]
+        keywords_stemmed += keywords_plural
+        
+        custom_stopwords = set(keywords + keywords_lemmatized + keywords_stemmed + keywords_plural)
 
+        gensim_stopwrods = gensim.parsing.preprocessing.STOPWORDS
 
         def process(text):
             result = []
             for token in gensim.utils.simple_preprocess(text):
-                if token not in gensim.parsing.preprocessing.STOPWORDS and token not in stop_keywords:
+                if token not in gensim_stopwrods and token not in custom_stopwords:
                     result.append(lemmatize(token))
             return result
 
 
         text = pd.Series(text)
+        
         return text.map(process)
 
 
@@ -205,7 +224,9 @@ class LDAModel(TopicModel):
                 term_id = term[0]
                 word = dictionary[term_id]
                 topic_title += word + " "
-            names.append(topic_title[:-1])
+            topic_title = topic_title[:-1]
+            topic_title = self.get_title(topic_title)
+            names.append(topic_title)
                 
 
         return probabilities, names

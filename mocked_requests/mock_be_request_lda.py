@@ -15,7 +15,7 @@ data = pd.read_csv("ML_WIFI_preprocessed.csv")
 
 os.system("rm ML_WIFI_preprocessed.csv")
 
-json_req = {"documents": []}
+json_req = {"documents": [], "keywords": ["machine learning", "wifi"]}
 
 ids = data.index.tolist()
 ids = list(map(lambda x: str(x), ids))

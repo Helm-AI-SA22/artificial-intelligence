@@ -153,7 +153,7 @@ os.system("rm response.json")
 
 dataframe.info()
 
-json_req = {"documents": []}
+json_req = {"documents": [], "keywords": query}
 
 ids = dataframe.index.tolist()
 ids = list(map(lambda x: str(x), ids))

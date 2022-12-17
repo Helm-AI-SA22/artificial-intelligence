@@ -17,7 +17,7 @@ data = data.head(1000).reset_index()
 
 os.system("rm ML_WIFI_preprocessed.csv")
 
-json_req = {"documents": []}
+json_req = {"documents": [], "keywords": ["machine learning", "wifi"]}
 
 ids = data.index.tolist()
 ids = list(map(lambda x: str(x), ids))
