@@ -23,6 +23,8 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 nltk.download('omw-1.4')
 nltk.download('wordnet')
 
+nlp = pipeline("mrm8488/t5-base-finetuned-common_gen")
+
 class TopicModel:
     
     def __init__(self):
@@ -42,11 +44,8 @@ class TopicModel:
         pass
 
     def get_title(self, title):
-        # print(title)
-        # print(title.split(" "))
-        # nlp = pipeline("k2t")
-        # return nlp(title.split(" "))
-        return title
+        return nlp(title.split(" "))
+        # return title
 
     def preprocess(self, text, keywords):
 
@@ -137,9 +136,9 @@ class BERTopicModel(TopicModel):
         plots = {}
 
         plots["hierarchicalClusteringPlot"] = create_plot(self.model.visualize_hierarchy)
-        plots["topicsWordsScorePlot"] = create_plot(self.model.visualize_barchart, None, self.num_topics)
+        plots["topicsWordsScorePlot"] = create_plot(self.model.visualize_barchart, None, self.num_topics, 20, False, "Topic Word Scores", 350, 350)
         plots["topicsSimilarityPlot"] = create_plot(self.model.visualize_heatmap)
-        plots["topicClustersPlot"] = create_plot(visualize_topics, self.model)
+        plots["topicClustersPlot"] = create_plot(visualize_topics, self.model, None, 10)
 
         return plots
 
