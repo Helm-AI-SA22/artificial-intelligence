@@ -7,6 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from typing import List
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
+from keytotext import pipeline
 import plotly.express as px
 import warnings
 warnings.filterwarnings("ignore")
@@ -32,6 +33,10 @@ def pre_load_bert_model(backend):
     _, _ = model.fit_transform(mocked_text)
 
 
+def pre_load_keytotext():
+    model = pipeline("mrm8488/t5-base-finetuned-common_gen")
+    print(model((["test", "test", "test"])))
+    # pipeline("mrm8488/t5-base-finetuned-summarize-news")(["test", "test", "test"])
 
 
 def visualize_topics(topic_model,

@@ -23,13 +23,13 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 nltk.download('omw-1.4')
 nltk.download('wordnet')
 
-nlp = pipeline("mrm8488/t5-base-finetuned-common_gen")
-
 class TopicModel:
     
     def __init__(self):
         self.model = None
         self.trained = False
+        self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-common_gen")
+        # self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-summarize-news")
 
     @abc.abstractmethod
     def load_model(self):
@@ -44,7 +44,7 @@ class TopicModel:
         pass
 
     def get_title(self, title):
-        return nlp(title.split(" "))
+        return self.keytotext_model(title.split(" "))
         # return title
 
     def preprocess(self, text, keywords):

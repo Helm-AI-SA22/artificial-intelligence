@@ -1,3 +1,9 @@
+import os
+os.environ["SENTENCE_TRANSFORMERS_HOME"] = f"{os.getcwd()}/.cache/"
+os.environ["TRANSFORMERS_CACHE"] = f"{os.getcwd()}/.cache/"
+os.environ["PYTORCH_TRANSFORMERS_CACHE"] = f"{os.getcwd()}/.cache/"
+os.environ["HF_HOME"] = f"{os.getcwd()}/.cache/"
+os.environ["PYTORCH_PRETRAINED_BERT_CACHE"] = f"{os.getcwd()}/.cache/"
 import warnings
 warnings.filterwarnings("ignore")
 from flask import Flask
@@ -5,11 +11,8 @@ from flask import request
 from flask_restx import Api, Resource, reqparse
 from handler import fast_api_handler, slow_api_handler
 from topic_modeling import BERTopicModel, LDAModel
-from utils import pre_load_bert_model, fix_plots
+from utils import pre_load_bert_model, fix_plots, pre_load_keytotext
 from flask_cors import CORS
-import os
-os.environ["SENTENCE_TRANSFORMERS_HOME"] = f"{os.getcwd()}/.cache/"
-
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -20,7 +23,6 @@ parser = reqparse.RequestParser()
 
 bertopic = None
 lda = None
-
 
 class SlowAPI(Resource):
 
@@ -70,6 +72,7 @@ if __name__ == "__main__":
 
     pre_load_bert_model("all-MiniLM-L6-v2")
     pre_load_bert_model("paraphrase-MiniLM-L3-v2")
+    pre_load_keytotext()
 
     bertopic = BERTopicModel()
     lda = LDAModel()
