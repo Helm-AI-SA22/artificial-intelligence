@@ -28,7 +28,7 @@ class TopicModel:
     def __init__(self):
         self.model = None
         self.trained = False
-        self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-common_gen")
+        # self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-common_gen")
         # self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-summarize-news")
 
     @abc.abstractmethod
@@ -44,8 +44,8 @@ class TopicModel:
         pass
 
     def get_title(self, title):
-        return self.keytotext_model(title.split(" "))
-        # return title
+        # return self.keytotext_model(title.split(" "))
+        return title
 
     def preprocess(self, text, keywords):
 

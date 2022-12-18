@@ -35,8 +35,7 @@ def pre_load_bert_model(backend):
 
 def pre_load_keytotext():
     model = pipeline("mrm8488/t5-base-finetuned-common_gen")
-    print(model((["test", "test", "test"])))
-    # pipeline("mrm8488/t5-base-finetuned-summarize-news")(["test", "test", "test"])
+    model((["test", "test", "test"]))
 
 
 def visualize_topics(topic_model,

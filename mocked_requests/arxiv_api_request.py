@@ -8,8 +8,8 @@ import time
 import base64
 
 
-api = "fast"
-# api = "slow"
+# api = "fast"
+api = "slow"
 
 def make_request(query, max_results):
 
@@ -133,7 +133,7 @@ def convert_to_csv(documents):
             data_dict[attribute].append(document[attribute])
 
     return pd.DataFrame(data_dict)
-    
+    texts
 
 query = ["cnn", "machine learning"]
 

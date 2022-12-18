@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     pre_load_bert_model("all-MiniLM-L6-v2")
     pre_load_bert_model("paraphrase-MiniLM-L3-v2")
-    pre_load_keytotext()
+    # pre_load_keytotext()
 
     bertopic = BERTopicModel()
     lda = LDAModel()

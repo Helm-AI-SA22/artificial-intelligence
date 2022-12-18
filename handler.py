@@ -20,11 +20,12 @@ def slow_api_handler(json_req, model):
 
     json_res["documents"] = []
 
-    for doc_info in zip(ids, probs):
-        id, prob = doc_info
+    for doc_info in zip(ids, probs, texts):
+        id, prob, text = doc_info
 
         document = {
             "id": id,
+            "text": text, 
             "topics": []
         }
 
@@ -133,11 +134,12 @@ def fast_api_handler(json_req, model, num_topics=None):
 
     json_res["documents"] = []
 
-    for doc_info in zip(ids, probs):
-        id, prob = doc_info
+    for doc_info in zip(ids, probs, texts):
+        id, prob, text = doc_info
 
         document = {
             "id": id,
+            "text": text,
             "topics": []
         }
 
@@ -172,5 +174,9 @@ def fast_api_handler(json_req, model, num_topics=None):
         encoded_text = base64.b64encode(html_text).decode("utf-8")
         json_res["topicsVisualization"]["ldaPlot"] = encoded_text
     os.system(f"rm {file_name}")
+
+    # tg = TitleGenerator()
+    # tg.set_documents(json_res)
+    # tg.get_titles()
 
     return json_res
