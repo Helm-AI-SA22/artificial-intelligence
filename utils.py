@@ -49,14 +49,14 @@ def get_topics_info(json_res, k):
         title = topic_titiles[topic_id]["title"]
         summary = topic_titiles[topic_id]["summary"]
         
-        json_res["topics"][topic_id]["title"] = title
+        json_res["topics"][topic_id]["name"] = title
         json_res["topics"][topic_id]["summary"] = summary
 
     topic_ids = list(map(lambda topic: topic["id"], json_res["topics"]))
 
     if -1 in topic_ids:
-        json_res["topics"][-1]["title"] = "noise"
-        json_res["topics"][-1]["summary"] = "Noise description"
+        # json_res["topics"][-1]["name"] = "noise"
+        json_res["topics"][-1]["summary"] = "Papers that have not been assigned to any topic."
     
     return json_res
 
