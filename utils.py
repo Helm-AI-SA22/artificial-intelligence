@@ -61,6 +61,13 @@ def get_topics_info(json_res, k):
     return json_res
 
 
+def set_empty_summary(response):
+    topic_ids = list(filter(lambda tid: tid != -1, map(lambda topic: topic["id"], response["topics"])))
+    for topic_id in topic_ids:
+        response["topics"][topic_id]["summary"] = None
+    return response
+
+
 def visualize_topics(topic_model,
                      topics: List[int] = None,
                      top_n_topics: int = None,

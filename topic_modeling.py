@@ -54,6 +54,7 @@ class TopicModel:
             return SnowballStemmer("english").stem(text)
 
         keywords.append("propose")
+        keywords.append("base")
         keywords = [word for key in keywords for word in key.split(" ")] + keywords
 
         keywords_lemmatized = [lemmatize(word) for key in keywords for word in key.split(" ")]

@@ -8,8 +8,8 @@ import time
 import base64
 
 
-# api = "fast"
-api = "slow"
+api = "fast"
+# api = "slow"
 
 def make_request(query, max_results):
 
