@@ -28,24 +28,22 @@ class TopicModel:
     def __init__(self):
         self.model = None
         self.trained = False
-        # self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-common_gen")
-        # self.keytotext_model = pipeline("mrm8488/t5-base-finetuned-summarize-news")
+
 
     @abc.abstractmethod
     def load_model(self):
         pass
 
+
     @abc.abstractmethod
     def train(self, text, keywords):
         pass
+
 
     @abc.abstractmethod
     def get_plots(self):
         pass
 
-    def get_title(self, title):
-        # return self.keytotext_model(title.split(" "))
-        return title
 
     def preprocess(self, text, keywords):
 
@@ -224,7 +222,6 @@ class LDAModel(TopicModel):
                 word = dictionary[term_id]
                 topic_title += word + " "
             topic_title = topic_title[:-1]
-            topic_title = self.get_title(topic_title)
             names.append(topic_title)
                 
 
