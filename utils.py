@@ -7,7 +7,6 @@ from sklearn.preprocessing import MinMaxScaler
 from typing import List
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
-from keytotext import pipeline
 import plotly.express as px
 import warnings
 warnings.filterwarnings("ignore")
