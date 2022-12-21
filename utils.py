@@ -57,15 +57,11 @@ def get_topics_info(json_res, k):
     if -1 in topic_ids:
         # json_res["topics"][-1]["name"] = "noise"
         json_res["topics"][-1]["summary"] = "Papers that have not been assigned to any topic."
+
+    for doc in json_res["documents"]:
+        del doc["text"]
     
     return json_res
-
-
-def set_empty_summary(response):
-    topic_ids = list(filter(lambda tid: tid != -1, map(lambda topic: topic["id"], response["topics"])))
-    for topic_id in topic_ids:
-        response["topics"][topic_id]["summary"] = None
-    return response
 
 
 def visualize_topics(topic_model,

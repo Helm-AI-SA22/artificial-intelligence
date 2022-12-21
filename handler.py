@@ -1,7 +1,7 @@
 import os
 import base64
 import warnings
-from utils import get_topics_info, set_empty_summary
+from utils import get_topics_info
 warnings.filterwarnings("ignore")
 
 def slow_api_handler(json_req, model):
@@ -176,7 +176,8 @@ def fast_api_handler(json_req, model, num_topics=None):
         json_res["topicsVisualization"]["ldaPlot"] = encoded_text
     os.system(f"rm {file_name}")
 
-    json_res = set_empty_summary(json_res)
+    # json_res = set_empty_summary(json_res)
+    json_res = get_topics_info(json_res, 3)
     
 
     return json_res

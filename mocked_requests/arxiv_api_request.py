@@ -133,12 +133,12 @@ def convert_to_csv(documents):
             data_dict[attribute].append(document[attribute])
 
     return pd.DataFrame(data_dict)
-    texts
+    
 
 query = ["cnn", "machine learning"]
 
 start = time.time()
-make_request(query, 2000)
+make_request(query, 2200)
 documents = parse_result()
 end = time.time()
 print(end - start)
