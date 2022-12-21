@@ -8,6 +8,8 @@ from typing import List
 import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 import plotly.express as px
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from title_generation import TitleGenerator
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -32,10 +34,34 @@ def pre_load_bert_model(backend):
     _, _ = model.fit_transform(mocked_text)
 
 
-def pre_load_keytotext():
-    model = pipeline("mrm8488/t5-base-finetuned-common_gen")
-    print(model((["test", "test", "test"])))
-    # pipeline("mrm8488/t5-base-finetuned-summarize-news")(["test", "test", "test"])
+def pre_load_title_generator():
+    _ = AutoModelForSeq2SeqLM.from_pretrained("Callidior/bert2bert-base-arxiv-titlegen")
+    _ = AutoTokenizer.from_pretrained("Callidior/bert2bert-base-arxiv-titlegen")
+
+
+def get_topics_info(json_res, k):
+    title_generator = TitleGenerator()
+    title_generator.set_documents(json_res)
+    topic_titiles = title_generator.get_titles(k)
+
+    for topic_id in topic_titiles.keys():
+
+        title = topic_titiles[topic_id]["title"]
+        summary = topic_titiles[topic_id]["summary"]
+        
+        json_res["topics"][topic_id]["name"] = title
+        json_res["topics"][topic_id]["summary"] = summary
+
+    topic_ids = list(map(lambda topic: topic["id"], json_res["topics"]))
+
+    if -1 in topic_ids:
+        # json_res["topics"][-1]["name"] = "noise"
+        json_res["topics"][-1]["summary"] = "Papers that have not been assigned to any topic."
+
+    for doc in json_res["documents"]:
+        del doc["text"]
+    
+    return json_res
 
 
 def visualize_topics(topic_model,

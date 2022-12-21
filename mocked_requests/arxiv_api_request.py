@@ -138,7 +138,7 @@ def convert_to_csv(documents):
 query = ["cnn", "machine learning"]
 
 start = time.time()
-make_request(query, 2000)
+make_request(query, 2200)
 documents = parse_result()
 end = time.time()
 print(end - start)

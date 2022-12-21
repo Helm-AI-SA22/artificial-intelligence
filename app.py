@@ -11,7 +11,7 @@ from flask import request
 from flask_restx import Api, Resource, reqparse
 from handler import fast_api_handler, slow_api_handler
 from topic_modeling import BERTopicModel, LDAModel
-from utils import pre_load_bert_model, fix_plots, pre_load_keytotext
+from utils import pre_load_bert_model, fix_plots, pre_load_title_generator
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -35,7 +35,6 @@ class SlowAPI(Resource):
             json_req = request.get_json()
         else:
             return 'Content-Type not supported!'
-
         try:
             return slow_api_handler(json_req, bertopic)
         except Exception:
@@ -72,7 +71,7 @@ if __name__ == "__main__":
 
     pre_load_bert_model("all-MiniLM-L6-v2")
     pre_load_bert_model("paraphrase-MiniLM-L3-v2")
-    pre_load_keytotext()
+    pre_load_title_generator()
 
     bertopic = BERTopicModel()
     lda = LDAModel()
