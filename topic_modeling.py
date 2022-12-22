@@ -18,7 +18,7 @@ import pyLDAvis.gensim_models
 from sklearn.decomposition import PCA
 import nltk
 import os
-from keytotext import pipeline
+
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 nltk.download('omw-1.4')
 nltk.download('wordnet')
